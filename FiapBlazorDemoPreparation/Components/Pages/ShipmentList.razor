@@ -1,0 +1,60 @@
+﻿@page "/shipment-list"
+@inject InMemoryStorageService StorageService
+@using FiapBlazorDemoPreparartion.Shared.Models
+@using FiapBlazorDemoPreparation.Services
+@rendermode InteractiveServer
+
+
+<h3>Shipment List</h3>
+
+@if (shipments == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Shipment ID</th>
+                <th>Ship Name</th>
+                <th>Origin Port</th>
+                <th>Destination Port</th>
+                <th>Status</th>
+                <th>ETA</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var shipment in shipments)
+            {
+                <tr>
+                    <td>@shipment.ShipmentId</td>
+                    <td>@shipment.ShipName</td>
+                    <td>@shipment.OriginPort</td>
+                    <td>@shipment.DestinationPort</td>
+                    <td>@shipment.Status</td>
+                    <td>@shipment.ETA.ToShortDateString()</td>
+                    <td>
+                        <button @onclick="() => DeleteShipment(shipment.ShipmentId)" class="btn btn-danger">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Shipment> shipments;
+
+    protected override void OnInitialized()
+    {
+        shipments = StorageService.GetShipments();
+    }
+
+    private void DeleteShipment(int shipmentId)
+    {
+        StorageService.DeleteShipment(shipmentId);
+        shipments = StorageService.GetShipments(); // Refresh the list
+    }
+}

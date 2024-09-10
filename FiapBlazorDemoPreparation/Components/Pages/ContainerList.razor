@@ -1,0 +1,57 @@
+﻿@page "/container-list"
+@inject InMemoryStorageService StorageService
+@using FiapBlazorDemoPreparartion.Shared.Models
+@using FiapBlazorDemoPreparation.Services
+@rendermode InteractiveServer
+
+<h3>Container List</h3>
+
+@if (containers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Container ID</th>
+                <th>Size</th>
+                <th>Weight</th>
+                <th>Content</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var container in containers)
+            {
+                <tr>
+                    <td>@container.ContainerId</td>
+                    <td>@container.Size</td>
+                    <td>@container.Weight</td>
+                    <td>@container.Content</td>
+                    <td>@container.Status</td>
+                    <td>
+                        <button @onclick="() => DeleteContainer(container.ContainerId)" class="btn btn-danger">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Container> containers;
+
+    protected override void OnInitialized()
+    {
+        containers = StorageService.GetContainers();
+    }
+
+    private void DeleteContainer(int containerId)
+    {
+        StorageService.DeleteContainer(containerId);
+        containers = StorageService.GetContainers(); // Refresh the list
+    }
+}

@@ -1,0 +1,52 @@
+﻿@page "/add-container"
+
+
+@inject InMemoryStorageService StorageService
+@inject NavigationManager Navigation
+@using FiapBlazorDemoPreparartion.Shared.Models
+@using FiapBlazorDemoPreparation.Services;
+@rendermode RenderMode.InteractiveServer
+
+<h3>Add New Container</h3>
+
+<EditForm Model="@newContainer" OnValidSubmit="HandleValidSubmit" FormName="AddContainerForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="size">Size</label>
+        <InputText id="size" class="form-control" @bind-Value="@newContainer.Size" />
+        <ValidationMessage For="@(() => newContainer.Size)" />
+    </div>
+
+    <div class="form-group">
+        <label for="weight">Weight (kg)</label>
+        <InputNumber id="weight" class="form-control" @bind-Value="@newContainer.Weight" />
+        <ValidationMessage For="@(() => newContainer.Weight)" />
+    </div>
+
+    <div class="form-group">
+        <label for="content">Content Description</label>
+        <InputTextArea id="content" class="form-control" @bind-Value="@newContainer.Content" />
+        <ValidationMessage For="@(() => newContainer.Content)" />
+    </div>
+
+    <div class="form-group">
+        <label for="status">Status</label>
+        <InputText id="status" class="form-control" @bind-Value="@newContainer.Status" />
+        <ValidationMessage For="@(() => newContainer.Status)" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Add Container</button>
+</EditForm>
+
+@code {
+    private Container newContainer = new Container();
+
+    private void HandleValidSubmit()
+    {
+        StorageService.AddContainer(newContainer);
+        // Reset form fields after successful submission
+        Navigation.NavigateTo("/container-list");
+    }
+}

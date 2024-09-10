@@ -1,0 +1,58 @@
+﻿@page "/add-shipment"
+@inject InMemoryStorageService StorageService
+@inject NavigationManager Navigation
+@using FiapBlazorDemoPreparartion.Shared.Models
+@using FiapBlazorDemoPreparation.Services
+@rendermode InteractiveServer
+
+<h3>Add New Shipment</h3>
+
+<EditForm Model="@newShipment" OnValidSubmit="HandleValidSubmit" FormName="AddShipmentForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="shipName">Ship Name</label>
+        <InputText id="shipName" class="form-control" @bind-Value="@newShipment.ShipName"  />
+        <ValidationMessage For="@(() => newShipment.ShipName)" />
+    </div>
+
+    <div class="form-group">
+        <label for="originPort">Origin Port</label>
+        <InputText id="originPort" class="form-control" @bind-Value="@newShipment.OriginPort" />
+        <ValidationMessage For="@(() => newShipment.OriginPort)" />
+    </div>
+
+    <div class="form-group">
+        <label for="destinationPort">Destination Port</label>
+        <InputText id="destinationPort" class="form-control" @bind-Value="@newShipment.DestinationPort" />
+        <ValidationMessage For="@(() => newShipment.DestinationPort)" />
+    </div>
+
+    <div class="form-group">
+        <label for="status">Status</label>
+        <InputText id="status" class="form-control" @bind-Value="@newShipment.Status" />
+        <ValidationMessage For="@(() => newShipment.Status)" />
+    </div>
+
+    <div class="form-group">
+        <label for="eta">ETA</label>
+        <InputDate @bind-Value="@newShipment.ETA" class="form-control" />
+        <ValidationMessage For="@(() => newShipment.ETA)" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Add Shipment</button>
+</EditForm>
+
+@code {
+    private Shipment newShipment = new Shipment();
+
+    private void HandleValidSubmit()
+    {
+        StorageService.AddShipment(newShipment);
+        newShipment = new Shipment(); // Reset the form fields after successful submission
+
+        // Navigate to the shipment list page without reloading the entire page
+        Navigation.NavigateTo("/shipment-list", forceLoad: false);
+    }
+}
